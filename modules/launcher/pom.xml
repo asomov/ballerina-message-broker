@@ -62,8 +62,8 @@
             <artifactId>broker-coordination</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
+            <groupId>org.snakeyaml</groupId>
+            <artifactId>snakeyaml-beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

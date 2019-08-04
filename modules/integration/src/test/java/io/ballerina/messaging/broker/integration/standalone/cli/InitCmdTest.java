@@ -127,18 +127,18 @@ public class InitCmdTest extends CliTestParent {
         String[] cmd = { CLI_ROOT_COMMAND, "init" };
         String expectedExpMessage = "User password is not provided.";
 
-        boolean failed = false;
-
         Main.main(cmd);
         // haven't used testNG builtin exception support because BrokerClientException doesn't support
         // getDetailedMessage method
         try {
-            Utils.getConfiguration(null);
+            Configuration conf = Utils.getConfiguration(null);
+            if (conf != null) {
+                Assert.fail("The conf should not have been created: " + conf.getUrl());
+            }
+            Assert.fail("No exception is thrown but BrokerClientException was expected");
         } catch (BrokerClientException ex) {
-            failed = true;
             boolean doesContain = ex.getMessages().stream().anyMatch(msg -> msg.contains(expectedExpMessage));
             Assert.assertTrue(doesContain, "exception message is invalid");
         }
-        Assert.assertTrue(failed, "no exception is thrown but BrokerClientException was expected");
     }
 }

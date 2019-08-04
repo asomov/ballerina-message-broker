@@ -19,15 +19,21 @@
 package io.ballerina.messaging.broker.client.utils;
 
 import io.ballerina.messaging.broker.client.resources.Configuration;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
+import org.snakeyaml.beans.v1.api.BeanDump;
+import org.snakeyaml.beans.v1.api.BeanDumpSettings;
+import org.snakeyaml.beans.v1.api.BeanLoad;
+import org.snakeyaml.beans.v1.api.BeanLoadSettings;
+import org.snakeyaml.beans.v1.api.ClassDefinition;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.YamlOutputStreamWriter;
+import org.snakeyaml.engine.v2.common.FlowStyle;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -53,10 +59,11 @@ public class Utils {
     }
 
     private static Configuration readConfigurationFile() {
-        Yaml yaml = new Yaml();
+        BeanLoad<Configuration> beanLoad = new BeanLoad<>(BeanLoadSettings.builder().build(),
+                new ClassDefinition(Configuration.class));
 
         try (InputStream in = new FileInputStream(getConfigFilePath())) {
-            Configuration configuration = yaml.loadAs(in, Configuration.class);
+            Configuration configuration = beanLoad.loadBeanFromInputStream(in);
             // validate the configuration
             if (!Configuration.validateConfiguration(configuration)) {
                 BrokerClientException exception = new BrokerClientException();
@@ -103,15 +110,16 @@ public class Utils {
      * @param configuration instance containing the Configuration information.
      */
     public static void createConfigurationFile(Configuration configuration) {
-        DumperOptions options = new DumperOptions();
-        options.setPrettyFlow(true);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        Yaml yaml = new Yaml(options);
+        DumpSettings settings = DumpSettings.builder()
+                .setMultiLineFlow(true)
+                .setDefaultFlowStyle(FlowStyle.BLOCK)
+                .build();
+        BeanDump dumper = new BeanDump(BeanDumpSettings.builder().setDumpSettings(settings).build());
 
         // dump to the file
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(getConfigFilePath()),
+        try (StreamToFileWriter writer = new StreamToFileWriter(new FileOutputStream(getConfigFilePath()),
                 StandardCharsets.UTF_8)) {
-            yaml.dump(configuration, writer);
+            dumper.dump(configuration, writer);
         } catch (IOException e) {
             BrokerClientException brokerClientException = new BrokerClientException();
             brokerClientException.addMessage("error when creating the configuration file. " + e.getMessage());
@@ -125,5 +133,20 @@ public class Utils {
             return path;
         }
         return Constants.DEFAULT_CONFIG_FILE_PATH;
+    }
+}
+
+/**
+ * Implement Writer which does not throw IOExceptions.
+ */
+class StreamToFileWriter extends YamlOutputStreamWriter {
+    public StreamToFileWriter(OutputStream out, Charset cs) {
+        super(out, cs);
+    }
+    @Override
+    public void processIOException(IOException e) {
+        BrokerClientException brokerClientException = new BrokerClientException();
+        brokerClientException.addMessage("error when creating the configuration file. " + e.getMessage());
+        throw brokerClientException;
     }
 }
