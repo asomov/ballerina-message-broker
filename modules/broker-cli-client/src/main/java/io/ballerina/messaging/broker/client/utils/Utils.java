@@ -20,11 +20,10 @@ package io.ballerina.messaging.broker.client.utils;
 
 import io.ballerina.messaging.broker.client.resources.Configuration;
 import org.snakeyaml.beans.v1.api.BeanDump;
-import org.snakeyaml.beans.v1.api.BeanDumpSettings;
 import org.snakeyaml.beans.v1.api.BeanLoad;
-import org.snakeyaml.beans.v1.api.BeanLoadSettings;
 import org.snakeyaml.beans.v1.api.ClassDefinition;
 import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.api.YamlOutputStreamWriter;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 
@@ -59,7 +58,7 @@ public class Utils {
     }
 
     private static Configuration readConfigurationFile() {
-        BeanLoad<Configuration> beanLoad = new BeanLoad<>(BeanLoadSettings.builder().build(),
+        BeanLoad<Configuration> beanLoad = new BeanLoad<>(LoadSettings.builder().build(),
                 new ClassDefinition(Configuration.class));
 
         try (InputStream in = new FileInputStream(getConfigFilePath())) {
@@ -114,7 +113,7 @@ public class Utils {
                 .setMultiLineFlow(true)
                 .setDefaultFlowStyle(FlowStyle.BLOCK)
                 .build();
-        BeanDump dumper = new BeanDump(BeanDumpSettings.builder().setDumpSettings(settings).build());
+        BeanDump dumper = new BeanDump(settings);
 
         // dump to the file
         try (StreamToFileWriter writer = new StreamToFileWriter(new FileOutputStream(getConfigFilePath()),
