@@ -31,7 +31,6 @@ import java.util.Arrays;
  * short-string = OCTET *string-char ; length + content
  */
 public class ShortString implements EncodableData {
-    private static final int MAX_LENGTH = 0xFF;
     private final long length;
 
     // TODO maybe we should keep a char sequence instead of a byte array.
