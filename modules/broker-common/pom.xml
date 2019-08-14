@@ -53,10 +53,6 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.config</groupId>
-            <artifactId>org.wso2.carbon.config</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
