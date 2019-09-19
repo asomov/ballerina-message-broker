@@ -19,13 +19,10 @@
 
 package io.ballerina.messaging.broker.core;
 
-import java.util.Properties;
-
 /**
  * Interface representing broker subscription.
  */
 public interface Consumer {
-
 
     int getId();
 
@@ -65,5 +62,7 @@ public interface Consumer {
      */
     boolean isReady();
 
-    Properties getTransportProperties();
+    Integer getChannelId();
+
+    Integer getConnectionId();
 }

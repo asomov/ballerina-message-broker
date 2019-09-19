@@ -19,7 +19,6 @@
 
 package io.ballerina.messaging.broker.amqp.consumer;
 
-import io.ballerina.messaging.broker.amqp.codec.AmqConstant;
 import io.ballerina.messaging.broker.amqp.codec.AmqpChannel;
 import io.ballerina.messaging.broker.common.data.types.ShortString;
 import io.ballerina.messaging.broker.core.Broker;
@@ -31,7 +30,6 @@ import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -61,8 +59,6 @@ public class AmqpConsumer implements Consumer {
 
     private boolean isReady;
 
-    private Properties transportProperties;
-
     private final int id;
 
     public AmqpConsumer(ChannelHandlerContext ctx,
@@ -77,7 +73,6 @@ public class AmqpConsumer implements Consumer {
         this.context = ctx;
         this.channel = channel;
         this.id = idGenerator.incrementAndGet();
-        setTransportProperties();
         if (MessageTracer.isTraceEnabled()) {
             this.channelFutureListenerFactory = new ConsumerErrorHandlerFactory(broker, queueName);
         } else {
@@ -146,15 +141,11 @@ public class AmqpConsumer implements Consumer {
                 + '}';
     }
 
-    private void setTransportProperties() {
-        Properties properties = new Properties();
-        properties.put(AmqConstant.TRANSPORT_PROPERTY_CHANNEL_ID, this.channel.getChannelId());
-        properties.put(AmqConstant.TRANSPORT_PROPERTY_CONNECTION_ID, this.channel.getConnectionId());
-        this.transportProperties = properties;
+    public Integer getChannelId() {
+        return this.channel.getChannelId();
     }
 
-    public Properties getTransportProperties() {
-        return transportProperties;
+    public Integer getConnectionId() {
+        return this.channel.getConnectionId();
     }
-
 }
