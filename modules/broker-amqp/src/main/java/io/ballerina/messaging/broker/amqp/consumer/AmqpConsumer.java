@@ -32,17 +32,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * AMQP based message consumer.
  */
-public class AmqpConsumer extends Consumer {
+public class AmqpConsumer implements Consumer {
     /**
      * Class logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AmqpConsumer.class);
 
     public static final String CONSUMER_TAG_FIELD_NAME = "consumerTag";
+
+    private static final AtomicInteger idGenerator = new AtomicInteger(0);
 
     private final String queueName;
 
@@ -60,6 +63,8 @@ public class AmqpConsumer extends Consumer {
 
     private Properties transportProperties;
 
+    private final int id;
+
     public AmqpConsumer(ChannelHandlerContext ctx,
                         Broker broker,
                         AmqpChannel channel,
@@ -71,6 +76,7 @@ public class AmqpConsumer extends Consumer {
         this.isExclusive = isExclusive;
         this.context = ctx;
         this.channel = channel;
+        this.id = idGenerator.incrementAndGet();
         setTransportProperties();
         if (MessageTracer.isTraceEnabled()) {
             this.channelFutureListenerFactory = new ConsumerErrorHandlerFactory(broker, queueName);
@@ -81,6 +87,11 @@ public class AmqpConsumer extends Consumer {
                                                                                         consumerTag,
                                                                                         this);
         }
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override
