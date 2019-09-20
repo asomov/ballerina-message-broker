@@ -19,25 +19,12 @@
 
 package io.ballerina.messaging.broker.core;
 
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Interface representing broker subscription.
  */
-public abstract class Consumer {
+public interface Consumer {
 
-    private static final AtomicInteger idGenerator = new AtomicInteger(0);
-
-    private final int id;
-
-    public Consumer() {
-        this.id = idGenerator.incrementAndGet();
-    }
-
-    public final int getId() {
-        return id;
-    }
+    int getId();
 
     /**
      * Send message to the consumer.
@@ -45,51 +32,37 @@ public abstract class Consumer {
      * @param message {@link Message} to be sent to the consumer
      * @throws BrokerException throws {@link BrokerException} on message sending failure
      */
-    protected abstract void send(Message message) throws BrokerException;
+    void send(Message message) throws BrokerException;
 
-    /**
+    /**AmqpConsumer
      * Queue name of the subscriber queue.
      *
      * @return queue name
      */
-    public abstract String getQueueName();
+    String getQueueName();
 
     /**
      * Close the underlying transport consumer.
      *
      * @throws BrokerException
      */
-    protected abstract void close() throws BrokerException;
+    void close() throws BrokerException;
 
     /**
      * If true only this consumer can access the queue and consume messages.
      *
      * @return True if the consumer is exclusive. False otherwise
      */
-    public abstract boolean isExclusive();
+    boolean isExclusive();
 
     /**
      * Indicate if consumer is ready to receive messages.
      *
      * @return true if the consumer can receive messages, false otherwise
      */
-    public abstract boolean isReady();
+    boolean isReady();
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof Consumer) {
-            return id == ((Consumer) obj).id;
-        }
-        return false;
-    }
+    Integer getChannelId();
 
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
-    }
-
-    public abstract Properties getTransportProperties();
+    Integer getConnectionId();
 }

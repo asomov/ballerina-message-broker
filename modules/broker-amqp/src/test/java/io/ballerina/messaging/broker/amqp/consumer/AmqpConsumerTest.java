@@ -19,7 +19,6 @@
 
 package io.ballerina.messaging.broker.amqp.consumer;
 
-import io.ballerina.messaging.broker.amqp.codec.AmqConstant;
 import io.ballerina.messaging.broker.amqp.codec.AmqpChannel;
 import io.ballerina.messaging.broker.common.data.types.ShortString;
 import io.ballerina.messaging.broker.core.Broker;
@@ -27,8 +26,6 @@ import io.netty.channel.ChannelHandlerContext;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.Properties;
 
 public class AmqpConsumerTest {
 
@@ -41,11 +38,8 @@ public class AmqpConsumerTest {
         Mockito.when(amqpChannel.getConnectionId()).thenReturn(7);
         AmqpConsumer consumer = new AmqpConsumer(context, broker, amqpChannel, "queue",
                                                  new ShortString(0, new byte[0]), true);
-        Properties transportProperties = consumer.getTransportProperties();
-        Assert.assertEquals(transportProperties.get(AmqConstant.TRANSPORT_PROPERTY_CHANNEL_ID), 5,
-                                                    "Incorrect channel id set");
-        Assert.assertEquals(transportProperties.get(AmqConstant.TRANSPORT_PROPERTY_CONNECTION_ID), 7,
-                                                    "Incorrect connection id set");
+        Assert.assertEquals(consumer.getChannelId(), Integer.valueOf(5), "Incorrect channel id set");
+        Assert.assertEquals(consumer.getConnectionId(), Integer.valueOf(7), "Incorrect connection id set");
     }
 
 }
