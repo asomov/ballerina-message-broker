@@ -66,6 +66,12 @@
             <artifactId>snakeyaml-beans</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>${rabbitmq.client.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <scope>test</scope>
@@ -209,5 +215,6 @@
         <db.url>jdbc:h2:${db.directory}</db.url>
         <sql.directory>src/main/resources/dbscripts</sql.directory>
         <product.package.name>message-broker</product.package.name>
+        <rabbitmq.client.version>5.7.2</rabbitmq.client.version>
     </properties>
 </project>
