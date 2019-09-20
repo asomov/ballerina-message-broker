@@ -33,7 +33,8 @@ public class ConsumerMetadata   {
   private @Valid String consumerTag = null;
   private @Valid Boolean isExclusive = null;
   private @Valid Boolean flowEnabled = null;
-  private @Valid Object transportProperties = null;
+  private @Valid Integer channelId = null;
+  private @Valid Integer connectionId = null;
 
   /**
    * unique id of the consumer
@@ -111,22 +112,33 @@ public class ConsumerMetadata   {
     this.flowEnabled = flowEnabled;
   }
 
-  /**
-   * Properties inherited by the underlying transport.
-   **/
-  public ConsumerMetadata transportProperties(Object transportProperties) {
-    this.transportProperties = transportProperties;
+
+  public ConsumerMetadata channel(Integer channelId) {
+    this.channelId = channelId;
     return this;
   }
-
-
-  @ApiModelProperty(value = "Properties inherited by the underlying transport.")
-  @JsonProperty("transportProperties")
-  public Object getTransportProperties() {
-    return transportProperties;
+  @ApiModelProperty(required = true, value = "Provide Channel ID")
+  @JsonProperty("channelId")
+  @NotNull
+  public Integer getChannelId() {
+    return channelId;
   }
-  public void setTransportProperties(Object transportProperties) {
-    this.transportProperties = transportProperties;
+  public void setChannelId(Integer channelId) {
+    this.channelId = channelId;
+  }
+
+  public ConsumerMetadata connection(Integer connectionId) {
+    this.connectionId = connectionId;
+    return this;
+  }
+  @ApiModelProperty(required = true, value = "Provide Connection ID")
+  @JsonProperty("connectionId")
+  @NotNull
+  public Integer getConnectionId() {
+    return connectionId;
+  }
+  public void setConnectionId(Integer connectionId) {
+    this.connectionId = connectionId;
   }
 
 
@@ -143,12 +155,13 @@ public class ConsumerMetadata   {
            Objects.equals(consumerTag, consumerMetadata.consumerTag) &&
            Objects.equals(isExclusive, consumerMetadata.isExclusive) &&
            Objects.equals(flowEnabled, consumerMetadata.flowEnabled) &&
-           Objects.equals(transportProperties, consumerMetadata.transportProperties);
+           Objects.equals(connectionId, consumerMetadata.connectionId) &&
+           Objects.equals(channelId, consumerMetadata.channelId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, consumerTag, isExclusive, flowEnabled, transportProperties);
+    return Objects.hash(id, consumerTag, isExclusive, flowEnabled, channelId, connectionId);
   }
 
   @Override
@@ -160,7 +173,8 @@ public class ConsumerMetadata   {
     sb.append("    consumerTag: ").append(toIndentedString(consumerTag)).append("\n");
     sb.append("    isExclusive: ").append(toIndentedString(isExclusive)).append("\n");
     sb.append("    flowEnabled: ").append(toIndentedString(flowEnabled)).append("\n");
-    sb.append("    transportProperties: ").append(toIndentedString(transportProperties)).append("\n");
+    sb.append("    channel: ").append(toIndentedString(channelId)).append("\n");
+    sb.append("    connection: ").append(toIndentedString(connectionId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

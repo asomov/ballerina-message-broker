@@ -20,7 +20,6 @@
 package io.ballerina.messaging.broker.integration.standalone.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.ballerina.messaging.broker.amqp.codec.AmqConstant;
 import io.ballerina.messaging.broker.core.rest.QueuesApiDelegate;
 import io.ballerina.messaging.broker.core.rest.model.ConsumerMetadata;
 import io.ballerina.messaging.broker.core.rest.model.Error;
@@ -43,7 +42,6 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
@@ -252,8 +250,7 @@ public class ConsumersRestApiTest {
     }
 
     private void validateTransportPropertyExistence(ConsumerMetadata consumerMetadata) {
-        Map properties = (Map) consumerMetadata.getTransportProperties();
-        Assert.assertNotNull(properties.get(AmqConstant.TRANSPORT_PROPERTY_CHANNEL_ID));
-        Assert.assertNotNull(properties.get(AmqConstant.TRANSPORT_PROPERTY_CONNECTION_ID));
+        Assert.assertNotNull(consumerMetadata.getChannelId());
+        Assert.assertNotNull(consumerMetadata.getConnectionId());
     }
 }
