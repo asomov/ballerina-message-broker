@@ -127,7 +127,10 @@ public class AmqpConnectionHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ProtocolInitFrame) {
             ProtocolInitFrame initMessage = (ProtocolInitFrame) msg;
-            //LOGGER.info("Received ProtocolInitFrame {} {} {}", initMessage.getMajorVersion(), initMessage.getMinorVersion(), initMessage.getRevision());
+            /*
+            LOGGER.info("Received ProtocolInitFrame {} {} {}", initMessage.getMajorVersion(),
+                    initMessage.getMinorVersion(), initMessage.getRevision());
+             */
             handleProtocolInit(ctx, initMessage);
         } else if (msg instanceof GeneralFrame) {
             GeneralFrame frameMessage = (GeneralFrame) msg;
