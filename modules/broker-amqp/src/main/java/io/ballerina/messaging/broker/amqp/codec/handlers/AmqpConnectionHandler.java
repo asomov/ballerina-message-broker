@@ -126,9 +126,13 @@ public class AmqpConnectionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ProtocolInitFrame) {
-            handleProtocolInit(ctx, (ProtocolInitFrame) msg);
+            ProtocolInitFrame initMessage = (ProtocolInitFrame) msg;
+            //LOGGER.info("Received ProtocolInitFrame {} {} {}", initMessage.getMajorVersion(), initMessage.getMinorVersion(), initMessage.getRevision());
+            handleProtocolInit(ctx, initMessage);
         } else if (msg instanceof GeneralFrame) {
-            ((GeneralFrame) msg).handle(ctx, this);
+            GeneralFrame frameMessage = (GeneralFrame) msg;
+            //LOGGER.info("Received frame {} ", frameMessage.getClass());
+            frameMessage.handle(ctx, this);
         } else if (msg instanceof AmqpBadMessage) {
             LOGGER.warn("Bad message received", ((AmqpBadMessage) msg).getCause());
             // TODO need to send error back to client

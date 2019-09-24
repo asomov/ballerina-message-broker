@@ -210,6 +210,7 @@ public class Server {
 
         protected void initChannel(SocketChannel socketChannel) {
             socketChannel.pipeline()
+                         //.addLast(new LoggingHandler(LogLevel.INFO))
                          .addLast(new AmqpDecoder(amqMethodRegistryFactory.newInstance()))
                          .addLast(new AmqpEncoder())
                          .addLast(new AmqpConnectionHandler(metricManager, amqpChannelFactory, connectionManager))
